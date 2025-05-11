@@ -1,23 +1,20 @@
-FROM gradle:8.7-jdk21
-
-ARG GRADLE_VERSION=8.7
-
-RUN apt-get update && apt-get install -yq unzip
-
-RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip \
-    && unzip gradle-${GRADLE_VERSION}-bin.zip \
-    && rm gradle-${GRADLE_VERSION}-bin.zip
-
-ENV GRADLE_HOME=/opt/gradle
-
-RUN mv gradle-${GRADLE_VERSION} ${GRADLE_HOME}
-
-ENV PATH=$PATH:$GRADLE_HOME/bin
+FROM eclipse-temurin:21-jdk-jammy
 
 WORKDIR /app
 
-COPY /app .
+# Копируем только необходимые файлы для кэширования
+COPY gradle gradle
+COPY build.gradle.kts settings.gradle.kts gradlew ./
 
-RUN gradle installDist
+# Скачиваем зависимости (использует кэш слоев)
+RUN ./gradlew dependencies --no-daemon
 
-CMD ./build/install/app/bin/app
+# Копируем исходный код
+COPY src src
+
+# Собираем приложение
+RUN ./gradlew shadowJar --no-daemon
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "build/libs/app.jar"]

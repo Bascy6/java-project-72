@@ -1,11 +1,10 @@
 services:
   - type: web
     name: java-project-72
-    runtime: docker  # Явно указываем использование Docker
+    runtime: docker
     plan: free
-    env: java
     envVars:
       - key: PORT
         value: "8080"
-      - key: JAVA_OPTS
-        value: "-Xmx512m"
+      - key: JAVA_HOME
+        value: "/usr/lib/jvm/temurin-21-jdk-amd64"
