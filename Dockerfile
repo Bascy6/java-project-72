@@ -1,21 +1,9 @@
-# Базовый образ с Java 21
-FROM eclipse-temurin:21-jdk-jammy
+FROM gradle:8.7-jdk21
 
-# Рабочая директория
 WORKDIR /app
 
-# Копируем Gradle файлы
-COPY build.gradle.kts settings.gradle.kts gradlew ./
-COPY gradle gradle
+COPY /app .
 
-# Копируем исходный код
-COPY src src
+RUN gradle installDist
 
-# Собираем приложение
-RUN ./gradlew shadowJar --no-daemon
-
-# Порт приложения
-EXPOSE 7070
-
-# Команда запуска
-CMD ["java", "-jar", "build/libs/app.jar", "--port", "7070"]
+CMD ./build/install/app/bin/app
