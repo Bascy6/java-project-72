@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: java-project-72
+    runtime: java
+    buildCommand: ./gradlew shadowJar
+    startCommand: java -jar build/libs/app.jar --port $PORT
+    env: java
+    envVars:
+      - key: PORT
+        value: "7070"
+      - key: JAVA_VERSION
+        value: "21"
