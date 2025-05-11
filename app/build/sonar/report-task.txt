@@ -1,0 +1,7 @@
+organization=bascy6
+projectKey=Bascy6_java-project-72
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.63177
+dashboardUrl=https://sonarcloud.io/dashboard?id=Bascy6_java-project-72
+ceTaskId=AZa-hb6PP4H_BpGydAZf
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZa-hb6PP4H_BpGydAZf
