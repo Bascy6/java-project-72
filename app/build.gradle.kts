@@ -55,3 +55,14 @@ application {
 }
 
 tasks.jacocoTestReport { reports { xml.required.set(true) } }
+
+tasks {
+    shadowJar {
+        archiveBaseName.set("app")
+        archiveClassifier.set("")
+        archiveVersion.set("")
+        manifest {
+            attributes["Main-Class"] = "hexlet.code.App"
+        }
+    }
+}

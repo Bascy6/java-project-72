@@ -1,12 +1,11 @@
 services:
   - type: web
     name: java-project-72
-    runtime: java
-    buildCommand: ./gradlew shadowJar
-    startCommand: java -jar build/libs/app.jar --port $PORT
+    runtime: docker  # Явно указываем использование Docker
+    plan: free
     env: java
     envVars:
       - key: PORT
         value: "8080"
-      - key: JAVA_VERSION
-        value: "21"
+      - key: JAVA_OPTS
+        value: "-Xmx512m"
