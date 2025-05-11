@@ -1,0 +1,8 @@
+ext.pathMapper = [:]
+ext.pathMapper.put('C:/Program Files/JetBrains/IntelliJ IDEA Community Edition 2024.3.2.2/lib/external-system-rt.jar', '/mnt/c/Program Files/JetBrains/IntelliJ IDEA Community Edition 2024.3.2.2/lib/external-system-rt.jar')
+ext.pathMapper.put('C:/Program Files/JetBrains/IntelliJ IDEA Community Edition 2024.3.2.2/plugins/gradle/lib/gradle-tooling-extension-api.jar', '/mnt/c/Program Files/JetBrains/IntelliJ IDEA Community Edition 2024.3.2.2/plugins/gradle/lib/gradle-tooling-extension-api.jar')
+ext.pathMapper.put('C:/Program Files/JetBrains/IntelliJ IDEA Community Edition 2024.3.2.2/plugins/gradle/lib/gradle-tooling-extension-impl.jar', '/mnt/c/Program Files/JetBrains/IntelliJ IDEA Community Edition 2024.3.2.2/plugins/gradle/lib/gradle-tooling-extension-impl.jar')
+ext.pathMapper.put('//wsl\\\$/Ubuntu-20.04/opt/jdk-21.0.2/bin/java', '//wsl\\\$/Ubuntu-20.04/opt/jdk-21.0.2/bin/java')
+ext.pathMapper.put('//wsl\\\$/Ubuntu-20.04/home/bascy/Hexlet/hexlet-assignments/java-web-ru/java-project-72', '//wsl\\\$/Ubuntu-20.04/home/bascy/Hexlet/hexlet-assignments/java-web-ru/java-project-72')
+ext.pathMapper.put("<<target java executable path>>", '/opt/jdk-21.0.2/bin/java')
+ext.mapPath = { path -> pathMapper.get(path) ?: path }

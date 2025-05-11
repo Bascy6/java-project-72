@@ -17,10 +17,6 @@ repositories {
     mavenCentral()
 }
 
-application {
-    mainClass.set("hexlet.code.App")
-}
-
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -52,6 +48,10 @@ tasks.test {
         // showCauses = true
         showStandardStreams = true
     }
+}
+
+application {
+    mainClass.set("hexlet.code.App")
 }
 
 tasks.jacocoTestReport { reports { xml.required.set(true) } }
