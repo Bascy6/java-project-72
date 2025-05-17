@@ -9,6 +9,9 @@ import gg.jte.TemplateEngine;
 import io.javalin.rendering.template.JavalinJte;
 import gg.jte.resolve.ResourceCodeResolver;
 import lombok.extern.slf4j.Slf4j;
+import hexlet.code.controller.RootController;
+import hexlet.code.controller.UrlsController;
+import hexlet.code.util.NamedRoutes;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,9 +22,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class App {
+    private static final String IN_MEMORY_DB = "jdbc:h2:mem:project";
 
     private static String getDatabaseUrl() {
-        String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project");
+        String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", IN_MEMORY_DB);
         log.info("jdbcUrl: {}", jdbcUrl);
         return jdbcUrl;
     }
@@ -59,7 +63,12 @@ public class App {
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        return app.get("/", ctx -> ctx.render("index.jte"));
+        app.get(NamedRoutes.mainPath(), RootController::index);
+        app.post(NamedRoutes.urlsPath(), UrlsController::create);
+        app.get(NamedRoutes.urlsPath(), UrlsController::index);
+        app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
+
+        return app;
     }
 
     private static int getPort() {
