@@ -1,5 +1,6 @@
-package hexlet.code;
+package hexlet;
 
+import hexlet.code.App;
 import hexlet.code.model.Url;
 import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlCheckRepository;
