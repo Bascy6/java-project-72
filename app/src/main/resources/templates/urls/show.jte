@@ -3,7 +3,7 @@
 @import java.time.format.DateTimeFormatter
 @param UrlPage page
 
-@template.layout.page(
+@templates.layout.page(
 page = page,
 content = @`
     <main class="flex-grow-1">

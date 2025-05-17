@@ -2,7 +2,7 @@
 @import java.time.format.DateTimeFormatter
 @param UrlsPage page
 
-@template.layout.page(
+@templates.layout.page(
 page = page,
 content = @`
     <section>
