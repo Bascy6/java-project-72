@@ -32,20 +32,6 @@ public class UrlRepository extends BaseRepository {
         }
     }
 
-    public static Boolean urlExists(String name) throws SQLException {
-        String sql = "SELECT * FROM urls WHERE name = ?";
-        try (var conn = dataSource.getConnection();
-             var statement = conn.prepareStatement(sql)) {
-            statement.setString(1, name);
-
-            var resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static Url getUrlFromResultSet(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
         String name = resultSet.getString("name");
@@ -79,5 +65,25 @@ public class UrlRepository extends BaseRepository {
             }
         }
         return Optional.empty();
+    }
+
+    public static Optional<Url> findByName(String urlName) throws SQLException {
+        var sql = "SELECT * FROM urls WHERE name = ?";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, urlName);
+            var resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                var name = resultSet.getString("name");
+                var createdAt = resultSet.getTimestamp("created_at");
+                var id = resultSet.getInt("id");
+                var url = new Url(name);
+                url.setCreatedAt(createdAt);
+                url.setId(id);
+
+                return Optional.of(url);
+            }
+            return Optional.empty();
+        }
     }
 }

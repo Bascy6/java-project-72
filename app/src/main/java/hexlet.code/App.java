@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class App {
-    private static final String IN_MEMORY_DB = "jdbc:h2:mem:project";
+    private static final String IN_MEMORY_DB = "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;";
 
     private static String getDatabaseUrl() {
         String jdbcUrl = System.getenv().getOrDefault("JDBC_DATABASE_URL", IN_MEMORY_DB);
@@ -52,8 +52,7 @@ public class App {
         String sql = readResourceFile();
 
         log.info(sql);
-        try (var connection = dataSource.getConnection();
-             var statement = connection.createStatement()) {
+        try (var connection = dataSource.getConnection(); var statement = connection.createStatement()) {
             statement.execute(sql);
         }
         BaseRepository.dataSource = dataSource;

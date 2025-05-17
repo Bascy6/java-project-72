@@ -1,23 +1,16 @@
 package hexlet.code.util;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 public class Utils {
 
-    public static String normalizeUrlName(String urlName) throws
-            IllegalArgumentException,
-            MalformedURLException,
-            URISyntaxException {
-        URI inputUri = new URI(urlName);
-        URL inputUrl = inputUri.toURL();
+    public static String getNormalizedURL(URL url) {
 
-        return String.format(
-                "%s://%s%s",
-                inputUrl.getProtocol(),
-                inputUrl.getHost(),
-                (inputUrl.getPort() == -1 ? "" : ":" + inputUrl.getPort()));
+        String protocol = url.getProtocol();
+        String symbols = "://";
+        String host = url.getHost();
+        String colonBeforePort = url.getPort() == -1 ? "" : ":";
+        String port = url.getPort() == -1 ? "" : String.valueOf(url.getPort());
+        return protocol + symbols + host + colonBeforePort + port;
     }
 }

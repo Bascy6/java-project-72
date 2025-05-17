@@ -11,8 +11,8 @@ import hexlet.code.util.Utils;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
+import java.net.URI;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -20,32 +20,36 @@ import java.util.Map;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class UrlsController {
-    public static void create(Context ctx) throws SQLException {
-        var urlName = ctx.queryParamAsClass("name", String.class)
-                .get()
-                .trim()
-                .toLowerCase();
 
-        String normalizedUrlName;
+    public static void create(Context ctx) throws SQLException {
+        var input = ctx.formParamAsClass("url", String.class)
+                .get()
+                .toLowerCase()
+                .trim();
+
+        String normalizedURL;
+
         try {
-            normalizedUrlName = Utils.normalizeUrlName(urlName);
-        } catch (MalformedURLException | IllegalArgumentException | URISyntaxException e) {
+            URL urlName = new URI(input).toURL();
+            normalizedURL = Utils.getNormalizedURL(urlName);
+        } catch (Exception e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
-            ctx.sessionAttribute("alertType", "danger");
+            ctx.sessionAttribute("flash-type", "warning");
             ctx.redirect(NamedRoutes.mainPath());
             return;
         }
 
-        if (!UrlRepository.urlExists(normalizedUrlName)) {
-            Url url = new Url(normalizedUrlName);
-            UrlRepository.save(url);
+        Url url = UrlRepository.findByName(normalizedURL).orElse(null);
 
-            ctx.sessionAttribute("flash", "Страница успешно добавлена");
-            ctx.sessionAttribute("alertType", "success");
+        if (url != null) {
+            ctx.sessionAttribute("flash", "Страница уже существует");
+            ctx.sessionAttribute("flash-type", "info");
             ctx.redirect(NamedRoutes.urlsPath());
         } else {
-            ctx.sessionAttribute("flash", "Страница уже существует");
-            ctx.sessionAttribute("alertType", "danger");
+            var newUrl = new Url(normalizedURL);
+            UrlRepository.save(newUrl);
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
+            ctx.sessionAttribute("flash-type", "success");
             ctx.redirect(NamedRoutes.urlsPath());
         }
     }
