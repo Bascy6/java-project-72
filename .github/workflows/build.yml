@@ -20,10 +20,8 @@ jobs:
         uses: gradle/gradle-build-action@v3
         with:
           gradle-version: 8.7
-          build-args: --no-daemon
-          cache: true
-          build-file: app/build.gradle.kts
-          arguments: test jacocoTestReport
+          arguments: gradle build
+          build-root-directory: app
 
       - name: Upload coverage to Qlty
         uses: qltysh/qlty-action/coverage@v1
