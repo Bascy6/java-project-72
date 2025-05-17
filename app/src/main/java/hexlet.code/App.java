@@ -2,16 +2,16 @@ package hexlet.code;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import hexlet.code.repository.BaseRepository;
-import io.javalin.Javalin;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
-import io.javalin.rendering.template.JavalinJte;
 import gg.jte.resolve.ResourceCodeResolver;
-import lombok.extern.slf4j.Slf4j;
 import hexlet.code.controller.RootController;
 import hexlet.code.controller.UrlsController;
-import hexlet.code.util.NamedRoutes;
+import hexlet.code.repository.BaseRepository;
+import hexlet.code.utils.NamedRoutes;
+import io.javalin.Javalin;
+import io.javalin.rendering.template.JavalinJte;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,7 +32,6 @@ public class App {
 
     private static String readResourceFile() throws IOException {
         var inputStream = App.class.getClassLoader().getResourceAsStream("schema.sql");
-        assert inputStream != null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
         }

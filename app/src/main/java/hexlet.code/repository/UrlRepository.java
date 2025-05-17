@@ -25,7 +25,7 @@ public class UrlRepository extends BaseRepository {
             var generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 url.setId(generatedKeys.getInt(1));
-                url.setCreatedAt(Timestamp.valueOf(createdAt));
+                url.setCreatedAt(createdAt);
             } else {
                 throw new SQLException("DB have not returned an id after saving an entity");
             }
@@ -33,10 +33,11 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static Url getUrlFromResultSet(ResultSet resultSet) throws SQLException {
-        int id = resultSet.getInt("id");
         String name = resultSet.getString("name");
-        Timestamp createdAt = resultSet.getTimestamp("created_at");
-        return new Url(id, name, createdAt);
+        var createdAt = resultSet.getTimestamp("created_at");
+        Url url = new Url(name);
+        url.setCreatedAt(createdAt.toLocalDateTime());
+        return url;
     }
 
     public static List<Url> getEntities() throws SQLException {
@@ -78,7 +79,7 @@ public class UrlRepository extends BaseRepository {
                 var createdAt = resultSet.getTimestamp("created_at");
                 var id = resultSet.getInt("id");
                 var url = new Url(name);
-                url.setCreatedAt(createdAt);
+                url.setCreatedAt(createdAt.toLocalDateTime());
                 url.setId(id);
 
                 return Optional.of(url);

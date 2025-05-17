@@ -1,4 +1,5 @@
 @import hexlet.code.dto.UrlPage
+@import hexlet.code.utils.DateTimes
 @import java.time.format.DateTimeFormatter
 @param UrlPage page
 
@@ -22,8 +23,7 @@ content = @`
                     </tr>
                     <tr>
                         <td>Дата создания</td>
-                        <td>${page.getUrl().getCreatedAt()
-                            .toLocalDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy kk:mm"))}</td>
+                        <td>${DateTimes.formatLocalDateTime(page.getUrl().getCreatedAt())}</td>
                     </tr>
                     </tbody>
                 </table>
