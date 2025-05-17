@@ -1,20 +1,24 @@
-@import hexlet.code.dto.BasePage
-@param BasePage page
+@import hexlet.code.dto.LinkPage
+@import hexlet.code.util.NamedRoutes
 
-@templates.layout.page(
+@param LinkPage page
+
+@template.layout.page(
 page = page,
 content = @`
+
     <section>
         <div class="container-fluid bg-dark p-5">
             <div class="row">
                 <div class="col-md-10 col-lg-8 mx-auto text-white">
                     <h1 class="display-3 mb-0">Анализатор страниц</h1>
                     <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
-                    <form action="/urls" method="post" class="rss-form text-body">
+                    <form action="${NamedRoutes.urlsPath()}" method="post" class="rss-form text-body">
                         <div class="row">
                             <div class="col">
                                 <div class="form-floating">
-                                    <input id="url-input" autofocus="" type="text" required="" name="url" aria-label="url" class="form-control w-100" placeholder="ссылка" autocomplete="off">
+                                    <input id="url-input" autofocus type="text" required name="url" aria-label="url"
+                                           class="form-control w-100" placeholder="Введите ссылку" autocomplete="off" value="${page.getLink()}">
                                     <label for="url-input">Ссылка</label>
                                 </div>
                             </div>
@@ -23,7 +27,7 @@ content = @`
                             </div>
                         </div>
                     </form>
-                    <p class="mt-2 mb-0 text-muted">Пример: https://www.example.com</p>
+                    <p class="mt-2 mb-0 text-light">Пример: https://www.example.com</p>
                 </div>
             </div>
         </div>

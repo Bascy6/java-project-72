@@ -1,47 +1,65 @@
+@import hexlet.code.model.Url
+@import hexlet.code.util.NamedRoutes
 @import hexlet.code.dto.UrlsPage
-@import java.time.format.DateTimeFormatter
+@import hexlet.code.util.Utils
+
 @param UrlsPage page
 
-@templates.layout.page(
+@template.layout.page(
 page = page,
 content = @`
-    <section>
-        <div class="container-lg mt-5">
-            <h1>Сайты</h1>
-            <table class="table table-bordered table-hover mt-3">
-                <thead>
-                <tr>
-                    <th class="col-1">ID</th>
-                    <th>Имя</th>
-                    <th class="col-2">Последняя проверка</th>
-                    <th class="col-1">Код ответа</th>
-                </tr>
-                </thead>
-                <tbody>
-                @for(var url : page.getUrls())
-                    <tr>
-                        <td>
-                            ${url.getId()}
-                        </td>
-                        <td>
-                            <a href="/urls/${url.getId()}">${url.getName()}</a>
-                        </td>
-                        <td>
-                            @if(page.getAllUrlsLastChecks() != null && page.getAllUrlsLastChecks().containsKey(url.getId()))
-                                ${page.getAllUrlsLastChecks().get(url.getId()).getCreatedAt()
-                            .toLocalDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy kk:mm"))}
-                            @endif
-                        </td>
-                        <td>
-                            @if(page.getAllUrlsLastChecks() != null && page.getAllUrlsLastChecks().containsKey(url.getId()))
-                                ${String.valueOf(page.getAllUrlsLastChecks().get(url.getId()).getStatusCode())}
-                            @endif
-                        </td>
-                    </tr>
-                @endfor
-                </tbody>
-            </table>
-        </div>
-    </section>
+
+    <div class="container-lg mt-5">
+        @if (page.getUrls() != null)
+
+            <div class="text-left mb-4">
+                <h2>Сайты</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ссылка</th>
+                            <th>Добавлена</th>
+                            <th>Последняя проверка</th>
+                            <th>Статус</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @for (Url url : page.getUrls())
+                            <tr>
+                                <td><a href="${NamedRoutes.urlPath(url.getId())}">${url.getId()}</a></td>
+                                <td>${url.getName()}</td>
+                                <td>${Utils.formatDate(url.getCreatedAt())}</td>
+                                <td>
+                                    @if (page.getUrlChecks().get(url.getId()) == null)
+                                        <span class="text-muted">Проверок не было</span>
+                                    @else
+                                        ${page.getUrlChecks().get(url.getId()).toString()}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if (page.getUrlChecks().get(url.getId()) == null)
+                                        <span class="text-muted">Проверок не было</span>
+                                    @else
+                                        ${page.getUrlChecks().get(url.getId()).toString()}
+                                    @endif
+                                </td>
+                            </tr>
+                        @endfor
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        @else
+            <div class="alert alert-info" role="alert">
+                Нет добавленных сайтов.
+            </div>
+        @endif
+    </div>
 `
 )

@@ -1,28 +1,42 @@
 package hexlet.code.model;
 
+
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import lombok.Setter;
+import lombok.Getter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-@AllArgsConstructor
 @Getter
 @Setter
-public final class UrlCheck {
-    private long id;
-    private int statusCode;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class UrlCheck {
+    private Long id;
+    private Integer statusCode;
     private String title;
     private String h1;
     private String description;
-    private long urlId;
-    private Timestamp createdAt;
+    private Long urlId;
+    private LocalDateTime createdAt;
 
-    public UrlCheck(int statusCode, String title, String h1, String description, long id) {
+    public UrlCheck(long checkId, int statusCode, String title, String h1, LocalDateTime createdAt, long checkUrlId) {
+        this.id = checkId;
         this.statusCode = statusCode;
         this.title = title;
         this.h1 = h1;
-        this.description = description;
-        this.urlId = id;
+        this.createdAt = createdAt;
+        this.urlId = checkUrlId;
+    }
+
+    public UrlCheck(Integer statusCode, LocalDateTime createdAt) {
+        this.statusCode = statusCode;
+        this.createdAt = createdAt;
     }
 }
