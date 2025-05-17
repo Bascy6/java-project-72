@@ -20,7 +20,7 @@ jobs:
         uses: gradle/gradle-build-action@v3
         with:
           gradle-version: 8.7
-          arguments: gradle build
+          arguments: build
           build-root-directory: app
 
       - name: Upload coverage to Qlty
