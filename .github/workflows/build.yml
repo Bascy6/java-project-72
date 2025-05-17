@@ -10,17 +10,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-      - uses: gradle/gradle-build-action@v3
+
+      - name: Build and test with Gradle
+        uses: gradle/gradle-build-action@v3
         with:
           gradle-version: 8.7
-      - run: make checkstyleMain
-      - run: make test
-      - name: Generate coverage report
-        run: app/gradlew jacocoTestReport
+          build-args: --no-daemon
+          cache: true
+          build-file: app/build.gradle.kts
+          arguments: test jacocoTestReport
+
       - name: Upload coverage to Qlty
         uses: qltysh/qlty-action/coverage@v1
         with:
