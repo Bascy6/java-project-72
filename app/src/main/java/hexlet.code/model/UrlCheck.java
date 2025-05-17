@@ -14,10 +14,10 @@ public final class UrlCheck {
     private String title;
     private String h1;
     private String description;
-    private int urlId;
+    private long urlId;
     private Timestamp createdAt;
 
-    public UrlCheck(int urlId, int statusCode) {
+    public UrlCheck(long urlId, int statusCode) {
         this.statusCode = statusCode;
         this.urlId = urlId;
     }

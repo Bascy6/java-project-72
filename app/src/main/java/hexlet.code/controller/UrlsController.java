@@ -10,6 +10,11 @@ import hexlet.code.util.NamedRoutes;
 import hexlet.code.util.Utils;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.Unirest;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.net.URI;
 import java.net.URL;
@@ -64,7 +69,7 @@ public class UrlsController {
     }
 
     public static void show(Context ctx) throws SQLException {
-        int id = ctx.pathParamAsClass("id", Integer.class).get();
+        long id = ctx.pathParamAsClass("id", Long.class).get();
         Url url = UrlRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Page not found"));
         List<UrlCheck> urlChecks = UrlChecksRepository.getAllChecksForUrl(id);
@@ -74,5 +79,40 @@ public class UrlsController {
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setAlertType(ctx.consumeSessionAttribute("alertType"));
         ctx.render("urls/show.jte", model("page", page));
+    }
+
+    public static void checkUrl(Context ctx) throws SQLException {
+        long id = ctx.pathParamAsClass("id", Long.class).getOrDefault(null);
+        Url url = UrlRepository.find(id)
+                .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
+
+        HttpResponse<String> response;
+
+        try {
+            response = Unirest.get(url.getName()).asString();
+            Unirest.shutDown();
+        } catch (Exception e) {
+            ctx.sessionAttribute("flash", "Invalid URL");
+            ctx.sessionAttribute("alertType", "danger");
+            ctx.redirect(NamedRoutes.urlPath(String.valueOf(id)));
+            return;
+        }
+
+        int statusCode = response.getStatus();
+        String responseHTMLBody = response.getBody();
+
+        UrlCheck urlCheck = new UrlCheck(id, statusCode);
+
+        Document document = Jsoup.parse(responseHTMLBody);
+        urlCheck.setTitle(document.title());
+        Element h1 = document.select("h1").first();
+        urlCheck.setH1(h1 == null ? null : h1.text());
+        Element content = document.select("meta[name=description]").first();
+        urlCheck.setDescription(content == null ? null : content.attr("content"));
+        UrlChecksRepository.save(urlCheck);
+
+        ctx.sessionAttribute("flash", "Страница успешно проверена");
+        ctx.sessionAttribute("alertType", "success");
+        ctx.redirect(NamedRoutes.urlPath(String.valueOf(id)));
     }
 }
