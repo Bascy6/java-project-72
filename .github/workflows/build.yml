@@ -20,7 +20,7 @@ jobs:
       - run: make checkstyleMain
       - run: make test
       - name: Generate coverage report
-        run:
+        run: ./gradlew jacocoTestReport
       - name: Upload coverage to Qlty
         uses: qltysh/qlty-action/coverage@v1
         with:
