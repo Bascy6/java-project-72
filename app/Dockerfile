@@ -16,10 +16,8 @@ ENV PATH=$PATH:$GRADLE_HOME/bin
 
 WORKDIR /app
 
-COPY /app .
+COPY . .
 
-RUN ./gradlew clean build
+RUN ./gradlew shadowJar
 
-RUN ./gradlew installDist
-
-CMD ./build/install/app/bin/app
+CMD java -jar build/libs/java-project-72-all.jar
