@@ -8,10 +8,8 @@
 @template.layout.page(
 page = page,
 content = @`
-
     <div class="container-lg mt-5">
         @if (page.getUrls() != null)
-
             <div class="text-left mb-4">
                 <h2>Сайты</h2>
             </div>
@@ -38,14 +36,14 @@ content = @`
                                     @if (page.getUrlChecks().get(url.getId()) == null)
                                         <span class="text-muted">Проверок не было</span>
                                     @else
-                                        ${page.getUrlChecks().get(url.getId()).toString()}
+                                        ${Utils.formatDate(page.getUrlChecks().get(url.getId()).getCreatedAt())}
                                     @endif
                                 </td>
                                 <td>
                                     @if (page.getUrlChecks().get(url.getId()) == null)
                                         <span class="text-muted">Проверок не было</span>
                                     @else
-                                        ${page.getUrlChecks().get(url.getId()).toString()}
+                                        ${page.getUrlChecks().get(url.getId()).getStatusCode()}
                                     @endif
                                 </td>
                             </tr>
@@ -54,7 +52,6 @@ content = @`
                     </table>
                 </div>
             </div>
-
         @else
             <div class="alert alert-info" role="alert">
                 Нет добавленных сайтов.

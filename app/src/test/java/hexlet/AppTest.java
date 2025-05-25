@@ -17,12 +17,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
 
 import java.io.IOException;
-
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import static hexlet.code.App.readResourceFile;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -57,15 +56,14 @@ public class AppTest {
         app = App.getApp();
     }
 
-
     @Test
     public void testMainPage() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get(NamedRoutes.rootPath());
-            Assertions.assertEquals(response.code(), 200);
-            assert response.body() != null;
-            Assertions.assertTrue(response.body().string()
-                    .contains(strToUtf8("Анализатор страниц")));
+            assertThat(response.code()).isEqualTo(200);
+            assertThat(response.body()).isNotNull();
+            assertThat(response.body().string())
+                    .contains(strToUtf8("Анализатор страниц"));
         });
     }
 
@@ -77,16 +75,14 @@ public class AppTest {
             UrlRepository.save(url);
 
             var response = client.get(NamedRoutes.urlsPath());
-            Assertions.assertEquals(response.code(), 200);
-            assert response.body() != null;
+            assertThat(response.code()).isEqualTo(200);
+            assertThat(response.body()).isNotNull();
 
             String responseBody = response.body().string();
-            Assertions.assertTrue(responseBody.contains("https://example.com"),
-                    "Expected URL to be present on the page.");
-            Assertions.assertTrue(responseBody.contains(strToUtf8("Сайты")),
-                    "Expected page title to be present.");
+            assertThat(responseBody)
+                    .contains("https://example.com")
+                    .contains(strToUtf8("Сайты"));
         });
-
     }
 
     @Test
@@ -96,39 +92,39 @@ public class AppTest {
             url.setName("https://example.com");
             UrlRepository.save(url);
 
-            var response = client.get(NamedRoutes.urlPath(1));
-            Assertions.assertEquals(response.code(), 200);
-            assert response.body() != null;
+            long urlId = url.getId();
+
+            var response = client.get(NamedRoutes.urlPath(urlId));
+            assertThat(response.code()).isEqualTo(200);
+            assertThat(response.body()).isNotNull();
 
             String responseBody = response.body().string();
-            Assertions.assertTrue(responseBody.contains("https://example.com"),
-                    "Expected URL to be present on the page.");
+            assertThat(responseBody)
+                    .contains("https://example.com")
+                    .contains(String.valueOf(urlId));
         });
     }
 
     @Test
-
     public void testCreateUrlWrong() {
         JavalinTest.test(app, (server, client) -> {
             var createResponse = client.post(NamedRoutes.urlsPath(), "example.com");
-            Assertions.assertEquals(400, createResponse.code(),
-                    "Expected status code 400 for invalid URL.");
-            List<Url> urls = UrlRepository.getEntities();
-            Assertions.assertFalse(urls.stream().anyMatch(url -> url.getName().equals("example.com")),
-                    "Expected no URL to be created in the database.");
+            assertThat(createResponse.code()).isEqualTo(400);
+
+            Optional<Url> foundUrl = UrlRepository.findByName("example.com");
+            assertThat(foundUrl).isEmpty();
         });
     }
 
     @Test
-
     public void testCreateUrlRight() {
         JavalinTest.test(app, (server, client) -> {
             var createResponse = client.post(NamedRoutes.urlsPath(), "url=https://example.com");
-            Assertions.assertEquals(200, createResponse.code(),
-                    "Expected status code 200 but got: " + createResponse.code());
+            assertThat(createResponse.code()).isEqualTo(200);
+
             List<Url> urls = UrlRepository.getEntities();
-            Assertions.assertTrue(urls.stream().anyMatch(url -> url.getName().equals("https://example.com")),
-                    "Expected URL to be created in the database.");
+            assertThat(urls)
+                    .anyMatch(url -> url.getName().equals("https://example.com"));
         });
     }
 
@@ -147,8 +143,7 @@ public class AppTest {
             UrlCheck check = checks.get(0);
             assertThat(check.getTitle()).isEqualTo("Test Title");
             assertThat(check.getH1()).isEqualTo("Test header");
-            assertThat(check.getDescription()).isEqualTo(null);
+            assertThat(check.getDescription()).isNull();
         });
     }
-
 }
