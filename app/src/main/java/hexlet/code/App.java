@@ -58,6 +58,12 @@ public class App {
         hikariConfig.setJdbcUrl(System.getenv()
                 .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;"));
 
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("PostgreSQL JDBC Driver not found", e);
+        }
+
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
         String sql = readResourceFile("schema.sql");
 

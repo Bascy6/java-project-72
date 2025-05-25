@@ -14,6 +14,4 @@ RUN chmod +x gradlew
 
 RUN ./gradlew shadowJar
 
-RUN ls -la build/libs/
-
-CMD ["java", "-jar", "build/libs/java-project-72-all.jar"]
+CMD ["java", "-cp", "build/libs/java-project-72-all.jar:build/libs/*", "hexlet.code.App"]
