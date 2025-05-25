@@ -47,7 +47,7 @@ tasks.test {
 }
 
 tasks.test {
-    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+    finalizedBy(tasks.jacocoTestReport)
 }
 
 tasks.jacocoTestReport {
@@ -62,4 +62,8 @@ tasks.jacocoTestReport {
 jacoco {
     toolVersion = "0.8.11"
     reportsDirectory = layout.buildDirectory.dir("reports/jacoco")
+}
+
+tasks.shadowJar {
+    archiveFileName.set("java-project-72-all.jar")
 }
