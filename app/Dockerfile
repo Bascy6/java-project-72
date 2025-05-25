@@ -2,8 +2,9 @@ FROM eclipse-temurin:20-jdk
 
 RUN apt-get update && apt-get install -yq unzip
 
-COPY . /app
 WORKDIR /app
+
+COPY app .
 
 RUN chmod +x gradlew
 
