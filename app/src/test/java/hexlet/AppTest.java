@@ -122,9 +122,11 @@ public class AppTest {
             var createResponse = client.post(NamedRoutes.urlsPath(), "url=https://example.com");
             assertThat(createResponse.code()).isEqualTo(200);
 
-            List<Url> urls = UrlRepository.getEntities();
-            assertThat(urls)
-                    .anyMatch(url -> url.getName().equals("https://example.com"));
+            Optional<Url> foundUrl = UrlRepository.findByName("https://example.com");
+            assertThat(foundUrl)
+                    .isPresent()
+                    .hasValueSatisfying(url ->
+                            assertThat(url.getName()).isEqualTo("https://example.com"));
         });
     }
 

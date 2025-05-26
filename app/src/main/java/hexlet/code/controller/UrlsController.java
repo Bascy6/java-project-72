@@ -15,7 +15,6 @@ import java.net.URL;
 import java.sql.SQLException;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.javalin.http.NotFoundResponse;
 import static io.javalin.rendering.template.TemplateUtil.model;
@@ -34,13 +33,9 @@ public class UrlsController {
         UrlsPage page = new UrlsPage();
         try {
             page.setUrls(UrlRepository.getEntities());
-            var lastChecks = UrlCheckRepository.getLastChecks();
-            Map<Long, UrlCheck> lastStatus = lastChecks.entrySet().stream()
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            Map.Entry::getValue
-                    ));
-            page.setUrlChecks(lastStatus);
+
+            Map<Long, UrlCheck> lastChecks = UrlCheckRepository.findLastChecksForAllUrls();
+            page.setUrlChecks(lastChecks);
 
             context.render("urls/index.jte", model("page", page));
         } catch (SQLException e) {
@@ -85,7 +80,7 @@ public class UrlsController {
             if (UrlRepository.findByName(link).isPresent()) {
                 context.sessionAttribute("flash", "Ссылка уже содержится");
                 context.redirect(NamedRoutes.rootPath());
-                return; // Возвращаемся, чтобы избежать вложенности
+                return;
             }
             UrlRepository.save(new Url(link));
             context.sessionAttribute("flash", "Ссылка успешно добавлена");

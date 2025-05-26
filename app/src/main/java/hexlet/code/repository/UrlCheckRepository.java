@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UrlCheckRepository extends BaseRepository {
 
@@ -84,6 +85,36 @@ public class UrlCheckRepository extends BaseRepository {
             }
             return result;
         }
+    }
+
+    public static Map<Long, UrlCheck> findLastChecksForAllUrls() throws SQLException {
+        String sql = """
+            SELECT DISTINCT ON (url_id) url_id, id, status_code, title, h1, description, created_at
+            FROM url_checks
+            ORDER BY url_id, created_at DESC
+            """;
+
+        Map<Long, UrlCheck> result = new HashMap<>();
+
+        try (var connection = dataSource.getConnection();
+             var stmt = connection.createStatement();
+             var rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                UrlCheck check = UrlCheck.builder()
+                        .id(rs.getLong("id"))
+                        .statusCode(rs.getInt("status_code"))
+                        .title(rs.getString("title"))
+                        .h1(rs.getString("h1"))
+                        .description(rs.getString("description"))
+                        .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                        .urlId(rs.getLong("url_id"))
+                        .build();
+
+                result.put(check.getUrlId(), check);
+            }
+        }
+        return result;
     }
 
 }

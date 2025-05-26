@@ -20,13 +20,15 @@ public class UrlRepository extends BaseRepository {
 
         try (var connection = dataSource.getConnection();
              var preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, url.getName());
 
             var createdAt = LocalDateTime.now();
             url.setCreatedAt(createdAt);
+
+            preparedStatement.setString(1, url.getName());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(createdAt));
 
             preparedStatement.executeUpdate();
+
             var generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 url.setId(generatedKeys.getLong(1));
@@ -34,15 +36,15 @@ public class UrlRepository extends BaseRepository {
                 throw new SQLException("DB have not returned an id after saving an entity");
             }
         }
-
     }
 
     public static List<Url> getEntities() throws SQLException {
-        String sql = "SELECT * FROM urls";
+        String sql = "SELECT * FROM urls ORDER BY id";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
+
             List<Url> resultList = new ArrayList<>();
 
             while (resultSet.next()) {
